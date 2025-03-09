@@ -29,15 +29,40 @@ public:
 
 	UFUNCTION()
 		void MoveForward(float axisValue);
+
 	UFUNCTION()
 		void MoveRight(float axisValue);
+
 	UFUNCTION()
 		void StartJump();
+
 	UFUNCTION()
 		void StopJump();
+
 	UFUNCTION()
 		void FindObject();
+
 	UPROPERTY(VisibleAnywhere)
 		UCameraComponent* PlayerCamComp;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats")
+		float Health = 100.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats")
+		float Hunger = 100.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats")
+		float Stamina = 100.0f;
+
+	UFUNCTION(BlueprintCallable)
+		void SetHealth(float amount);
+
+	UFUNCTION()
+		void SetHunger(float amount);
+
+	UFUNCTION()
+		void SetStamina(float amount);
+
+	UFUNCTION()
+		void DecreaseStats();
 };
