@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Camera/CameraComponent.h"
+#include "Resource_M.h"
 #include "PlayerChar.generated.h"
 
 UCLASS()
@@ -28,15 +29,19 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	UFUNCTION()
+		// Movement fucntion for forward and backward movement based on positive (w) or negative (s) integer input
 		void MoveForward(float axisValue);
 
 	UFUNCTION()
+		// Movement function for left and right movement based on positive (d) or negative (a) integer input
 		void MoveRight(float axisValue);
 
 	UFUNCTION()
+		// Movement function for the initiation of jumping event movement
 		void StartJump();
 
 	UFUNCTION()
+		// Movement function for the ending of jumping event movement
 		void StopJump();
 
 	UFUNCTION()
@@ -46,13 +51,31 @@ public:
 		UCameraComponent* PlayerCamComp;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats")
+		// Defined variable for player health
 		float Health = 100.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats")
+		// Defined variable for player hunger
 		float Hunger = 100.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats")
+		// Defined variable for player stamina
 		float Stamina = 100.0f;
+
+	UPROPERTY(EditAnywhere, Category = "Resources")
+		int Wood;
+
+	UPROPERTY(EditAnywhere, Category = "Resources")
+		int Stone;
+
+	UPROPERTY(EditAnywhere, Category = "Resources")
+		int Berry;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Resources")
+		TArray<int> ResourcesArray;
+
+	UPROPERTY(EditAnywhere, Category = "Resources")
+		TArray<FString> ResourcesNameArray;
 
 	UFUNCTION(BlueprintCallable)
 		void SetHealth(float amount);
@@ -65,4 +88,7 @@ public:
 
 	UFUNCTION()
 		void DecreaseStats();
+
+	UFUNCTION()
+		void GiveResource(float amount, FString resourceType);
 };
