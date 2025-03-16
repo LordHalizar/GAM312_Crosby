@@ -52,47 +52,57 @@ public:
 		UCameraComponent* PlayerCamComp;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats")
-		// Defined variable for player health
+		// Variable setup for player health default value
 		float Health = 100.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats")
-		// Defined variable for player hunger
+		// Variable setup for player default hunger
 		float Hunger = 100.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats")
-		// Defined variable for player stamina
+		// Variable setup for player default stamina
 		float Stamina = 100.0f;
 
 	UPROPERTY(EditAnywhere, Category = "Resources")
+		// Integer variable setup for wood resource
 		int Wood;
 
 	UPROPERTY(EditAnywhere, Category = "Resources")
+		// Integer variable setup for stone resource
 		int Stone;
 
 	UPROPERTY(EditAnywhere, Category = "Resources")
+		// Integer variable setup for berry resource
 		int Berry;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Resources")
+		// Array variable setup for assigned resource integer values
 		TArray<int> ResourcesArray;
 
 	UPROPERTY(EditAnywhere, Category = "Resources")
+		// Array variable setup for resource names
 		TArray<FString> ResourcesNameArray;
 
 	UPROPERTY(EditAnywhere, Category = "HitMarker")
 		UMaterialInterface* hitDecal;
 
 	UFUNCTION(BlueprintCallable)
+		// Setup for Health function
 		void SetHealth(float amount);
 
 	UFUNCTION()
+		// Setup for Hunger function
 		void SetHunger(float amount);
 
 	UFUNCTION()
+		// Setup for Stamina function
 		void SetStamina(float amount);
 
 	UFUNCTION()
+		// Setup for DecreaseStats function
 		void DecreaseStats();
 
 	UFUNCTION()
+		// Setup for GiveResource function
 		void GiveResource(float amount, FString resourceType);
 };

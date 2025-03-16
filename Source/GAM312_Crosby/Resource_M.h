@@ -26,12 +26,15 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	UPROPERTY(EditAnywhere)
+		// Setting up default resource name
 		FString resourceName = "Wood";
 
 	UPROPERTY(EditAnywhere)
+		// Set resource value collected from total
 		int resourceAmount = 5;
 
 	UPROPERTY(EditAnywhere)
+		// Total assigned resource value
 		int totalResource = 100;
 
 	UPROPERTY()
