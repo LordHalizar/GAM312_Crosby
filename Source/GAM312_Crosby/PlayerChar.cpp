@@ -14,6 +14,7 @@ APlayerChar::APlayerChar()
 
 	PlayerCamComp->bUsePawnControlRotation = true;
 
+	// Establishing resources and resource array
 	ResourcesArray.SetNum(3);
 	ResourcesNameArray.Add(TEXT("Wood"));
 	ResourcesNameArray.Add(TEXT("Stone"));
@@ -81,7 +82,8 @@ void APlayerChar::FindObject()
 	FVector StartLocation = PlayerCamComp->GetComponentLocation();
 	FVector Direction = PlayerCamComp->GetForwardVector() * 800.0f;
 	FVector EndLocation = StartLocation + Direction;
-
+	
+	// Collision exceptions for the line trace
 	FCollisionQueryParams QueryParams;
 	QueryParams.AddIgnoredActor(this);
 	QueryParams.bTraceComplex = true;
@@ -102,17 +104,21 @@ void APlayerChar::FindObject()
 				HitResource->totalResource = HitResource->totalResource - resourceValue;
 
 				if (HitResource->totalResource > resourceValue)
+					// if hit resources totalResource value is above 0, decrease resource value by defined amount
 				{
 					GiveResource(resourceValue, hitName);
 
+					// Checks if line trace is hitting anything and if, by extension, a resources is being collected
 					check(GEngine != nullptr);
 					GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Resource Collected"));
 
 					UGameplayStatics::SpawnDecalAtLocation(GetWorld(), hitDecal, FVector(10.0f, 10.0f, 10.0f), HitResult.Location, FRotator(-90, 0, 0), 2.0f);
 
+					// Decreases stamina when resource is collected, aka stamina is required for collecting resources
 					SetStamina(-5.0f);
 				}
 				else
+					// Once hit resources totalResource value reaches 0, recource object is destroyed, aka completely collected/harvested
 				{
 					HitResource->Destroy();
 					check(GEngine != nullptr);
@@ -152,13 +158,16 @@ void APlayerChar::SetStamina(float amount)
 
 void APlayerChar::DecreaseStats()
 {
+	// Hunger value slowly decreases over time, meaning player becomes increasingly more hungry
 	if (Hunger > 0) 
 	{
 		SetHunger(-1.0f);
 	}
 
+	// Stamina recovers constantly as long as hunger is above 0
 	SetStamina(10.0f);
 
+	// If hunger reaches 0, health value slowly decreases until it reaches 0
 	if (Hunger <= 0) 
 	{
 		SetHealth(-3.0f);
@@ -166,6 +175,7 @@ void APlayerChar::DecreaseStats()
 }
 
 void APlayerChar::GiveResource(float amount, FString resourceType)
+	// Function that allows player to acquire harvested resources
 {
 	if (resourceType == "Wood") 
 	{
