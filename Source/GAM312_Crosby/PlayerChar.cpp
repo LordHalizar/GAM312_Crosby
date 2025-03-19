@@ -14,6 +14,8 @@ APlayerChar::APlayerChar()
 
 	PlayerCamComp->bUsePawnControlRotation = true;
 
+	BuildingArray.SetNum(3);
+
 	// Establishing resources and resource array
 	ResourcesArray.SetNum(3);
 	ResourcesNameArray.Add(TEXT("Wood"));
@@ -36,6 +38,16 @@ void APlayerChar::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (isBuilding) 
+	{
+		if (spawnedPart) 
+		{
+			FVector StartLocation = PlayerCamComp->GetComponentLocation();
+			FVector Direction = PlayerCamComp->GetForwardVector() * 400.0f;
+			FVector EndLocation = StartLocation + Direction;
+			spawnedPart->SetActorLocation(EndLocation);
+		}
+	}
 }
 
 // Called to bind functionality to input
@@ -51,6 +63,7 @@ void APlayerChar::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	PlayerInputComponent->BindAction("JumpEvent", IE_Released, this, &APlayerChar::StopJump);
 
 	PlayerInputComponent->BindAction("Interact", IE_Pressed, this, &APlayerChar::FindObject);
+	PlayerInputComponent->BindAction("RotPart", IE_Pressed, this, &APlayerChar::RotateBuilding);
 }
 
 void APlayerChar::MoveForward(float axisValue)
@@ -89,43 +102,52 @@ void APlayerChar::FindObject()
 	QueryParams.bTraceComplex = true;
 	QueryParams.bReturnFaceIndex = true;
 
-	if (GetWorld()->LineTraceSingleByChannel(HitResult, StartLocation, EndLocation, ECC_Visibility, QueryParams)) 
+	if (!isBuilding) 
+		// Line trace allowed only if the player is not currently in building mode
 	{
-		AResource_M* HitResource = Cast<AResource_M>(HitResult.GetActor());
-
-		if (Stamina > 5.0f) 
-		// Stamina requirement for hit trace
+		if (GetWorld()->LineTraceSingleByChannel(HitResult, StartLocation, EndLocation, ECC_Visibility, QueryParams))
 		{
-			if (HitResource)
+			AResource_M* HitResource = Cast<AResource_M>(HitResult.GetActor());
+
+			if (Stamina > 5.0f)
+				// Stamina requirement for hit trace
 			{
-				FString hitName = HitResource->resourceName;
-				int resourceValue = HitResource->resourceAmount;
-
-				HitResource->totalResource = HitResource->totalResource - resourceValue;
-
-				if (HitResource->totalResource > resourceValue)
-					// if hit resources totalResource value is above 0, decrease resource value by defined amount
+				if (HitResource)
 				{
-					GiveResource(resourceValue, hitName);
+					FString hitName = HitResource->resourceName;
+					int resourceValue = HitResource->resourceAmount;
 
-					// Checks if line trace is hitting anything and if, by extension, a resources is being collected
-					check(GEngine != nullptr);
-					GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Resource Collected"));
+					HitResource->totalResource = HitResource->totalResource - resourceValue;
 
-					UGameplayStatics::SpawnDecalAtLocation(GetWorld(), hitDecal, FVector(10.0f, 10.0f, 10.0f), HitResult.Location, FRotator(-90, 0, 0), 2.0f);
+					if (HitResource->totalResource > resourceValue)
+						// if hit resources totalResource value is above 0, decrease resource value by defined amount
+					{
+						GiveResource(resourceValue, hitName);
 
-					// Decreases stamina when resource is collected, aka stamina is required for collecting resources
-					SetStamina(-5.0f);
-				}
-				else
-					// Once hit resources totalResource value reaches 0, recource object is destroyed, aka completely collected/harvested
-				{
-					HitResource->Destroy();
-					check(GEngine != nullptr);
-					GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Resource Depleted"));
+						// Checks if line trace is hitting anything and if, by extension, a resources is being collected
+						check(GEngine != nullptr);
+						GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Resource Collected"));
+
+						UGameplayStatics::SpawnDecalAtLocation(GetWorld(), hitDecal, FVector(10.0f, 10.0f, 10.0f), HitResult.Location, FRotator(-90, 0, 0), 2.0f);
+
+						// Decreases stamina when resource is collected, aka stamina is required for collecting resources
+						SetStamina(-5.0f);
+					}
+					else
+						// Once hit resources totalResource value reaches 0, recource object is destroyed, aka completely collected/harvested
+					{
+						HitResource->Destroy();
+						check(GEngine != nullptr);
+						GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Resource Depleted"));
+					}
 				}
 			}
 		}
+	}
+
+	else 
+	{
+		isBuilding = false;
 	}
 }
 
@@ -190,6 +212,67 @@ void APlayerChar::GiveResource(float amount, FString resourceType)
 	if (resourceType == "Berry") 
 	{
 		ResourcesArray[2] = ResourcesArray[2] + amount;
+	}
+}
+
+void APlayerChar::UpdateResources(float woodAmount, float stoneAmount, FString buildingObject)
+{
+	if (woodAmount <= ResourcesArray[0]) 
+	{
+		if (stoneAmount <= ResourcesArray[1]) 
+		{
+			ResourcesArray[0] = ResourcesArray[0] - woodAmount;
+			ResourcesArray[1] = ResourcesArray[1] - stoneAmount;
+
+			if (buildingObject == "Wall") 
+			{
+				BuildingArray[0] = BuildingArray[0] + 1;
+			}
+			if (buildingObject == "Floor") 
+			{
+				BuildingArray[1] = BuildingArray[1] + 1;
+			}
+			if (buildingObject == "Ceiling") 
+			{
+				BuildingArray[2] = BuildingArray[2] + 1;
+			}
+		}
+	}
+}
+
+void APlayerChar::SpawnBuilding(int buildingID, bool& isSuccess)
+{
+	if (!isBuilding) 
+		/// If player is in building mode and player selects a building part to build, 
+		/// function will spawn building part within set distance of the player with the provided rotation
+	{	
+		if (BuildingArray[buildingID] >= 1) 
+		{
+			isBuilding = true;
+			FActorSpawnParameters SpawnParass;
+			FVector StartLocation = PlayerCamComp->GetComponentLocation();
+			FVector Direction = PlayerCamComp->GetForwardVector() * 400.0f;
+			FVector EndLocation = StartLocation + Direction;
+			FRotator myRot(0, 0, 0);
+
+			BuildingArray[buildingID] = BuildingArray[buildingID] - 1;
+
+			spawnedPart = GetWorld()->SpawnActor<ABuildingPart>(BuildingPartClass, EndLocation, myRot, SpawnParass);
+
+			isSuccess = true;
+		}
+
+		isSuccess = false;
+	}
+}
+
+void APlayerChar::RotateBuilding()
+	/// Function that sets the rotation rate of building parts when the rotate
+	/// input button is pressed by the player
+{
+	if (isBuilding) 
+	{
+		spawnedPart->AddActorWorldRotation(FRotator(0, 90, 0));
 	}
 }
 
