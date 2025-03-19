@@ -7,6 +7,7 @@
 #include "Camera/CameraComponent.h"
 #include "Resource_M.h"
 #include <Kismet/GameplayStatics.h>
+#include "BuildingPart.h"
 #include "PlayerChar.generated.h"
 
 UCLASS()
@@ -86,15 +87,27 @@ public:
 	UPROPERTY(EditAnywhere, Category = "HitMarker")
 		UMaterialInterface* hitDecal;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Building Supplies")
+		TArray<int> BuildingArray;
+
+	UPROPERTY()
+		bool isBuilding;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+		TSubclassOf<ABuildingPart> BuildingPartClass;
+
+	UPROPERTY()
+		ABuildingPart* spawnedPart;
+
 	UFUNCTION(BlueprintCallable)
 		// Setup for Health function
 		void SetHealth(float amount);
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 		// Setup for Hunger function
 		void SetHunger(float amount);
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 		// Setup for Stamina function
 		void SetStamina(float amount);
 
@@ -105,4 +118,13 @@ public:
 	UFUNCTION()
 		// Setup for GiveResource function
 		void GiveResource(float amount, FString resourceType);
+
+	UFUNCTION(BlueprintCallable)
+		void UpdateResources(float woodAmount, float stoneAmount, FString buildingObject);
+
+	UFUNCTION(BlueprintCallable)
+		void SpawnBuilding(int buildingID, bool& isSuccess);
+
+	UFUNCTION()
+		void RotateBuilding();
 };
