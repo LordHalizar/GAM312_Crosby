@@ -25,7 +25,10 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	UPROPERTY(EditAnywhere)
+		// Setting up static mesh component
 		UStaticMeshComponent* Mesh;
+
 	UPROPERTY(EditAnywhere)
+		// Setting up arrow component for pivot arrow that will be starting location for all building parts
 		UArrowComponent* PivotArrow;
 };

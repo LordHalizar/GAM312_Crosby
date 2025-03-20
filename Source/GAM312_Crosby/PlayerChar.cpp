@@ -39,6 +39,8 @@ void APlayerChar::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	if (isBuilding) 
+	// Line trace for determining the spawn point of selected building parts to be spawned.
+	// Spawned building parts should follow players cursor until final placement point is selected.
 	{
 		if (spawnedPart) 
 		{
@@ -52,7 +54,7 @@ void APlayerChar::Tick(float DeltaTime)
 
 // Called to bind functionality to input
 void APlayerChar::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-// Player input components that create input triggers for directional movement, mouselook, and jumping (start & stop)
+// Player input components that create input triggers for directional movement, mouselook, jumping (start & stop), interact, and object rotation
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 	PlayerInputComponent->BindAxis("MoveForward", this, &APlayerChar::MoveForward);
@@ -216,6 +218,8 @@ void APlayerChar::GiveResource(float amount, FString resourceType)
 }
 
 void APlayerChar::UpdateResources(float woodAmount, float stoneAmount, FString buildingObject)
+	// Updates player resources based on number of resources needed to build selected building parts
+	// and subtracting them from the current resources the player has
 {
 	if (woodAmount <= ResourcesArray[0]) 
 	{

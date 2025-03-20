@@ -50,6 +50,7 @@ public:
 		void FindObject();
 
 	UPROPERTY(VisibleAnywhere)
+		// Variable for camera component
 		UCameraComponent* PlayerCamComp;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats")
@@ -88,15 +89,19 @@ public:
 		UMaterialInterface* hitDecal;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Building Supplies")
+		// Array for storing information on the number of building parts available to the player
 		TArray<int> BuildingArray;
 
 	UPROPERTY()
+		// Boolean variable for use in determining whether player is currently in building mode or not
 		bool isBuilding;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+		// Class variable for the selection and creation of different building parts
 		TSubclassOf<ABuildingPart> BuildingPartClass;
 
 	UPROPERTY()
+		// Variable meant to represent chosen building part to be spawned
 		ABuildingPart* spawnedPart;
 
 	UFUNCTION(BlueprintCallable)
@@ -120,11 +125,14 @@ public:
 		void GiveResource(float amount, FString resourceType);
 
 	UFUNCTION(BlueprintCallable)
+		// Updates resources based on resource amounts needed to build selected building part
 		void UpdateResources(float woodAmount, float stoneAmount, FString buildingObject);
 
 	UFUNCTION(BlueprintCallable)
+		// Function that spawns the selected building part
 		void SpawnBuilding(int buildingID, bool& isSuccess);
 
 	UFUNCTION()
+		// Function that allows for the rotation of built building parts
 		void RotateBuilding();
 };
