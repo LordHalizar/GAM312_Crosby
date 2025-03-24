@@ -8,6 +8,7 @@
 #include "Resource_M.h"
 #include <Kismet/GameplayStatics.h>
 #include "BuildingPart.h"
+#include "PlayerWidget.h"
 #include "PlayerChar.generated.h"
 
 UCLASS()
@@ -103,6 +104,9 @@ public:
 	UPROPERTY()
 		// Variable meant to represent chosen building part to be spawned
 		ABuildingPart* spawnedPart;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		UPlayerWidget* playerUI;
 
 	UFUNCTION(BlueprintCallable)
 		// Setup for Health function
