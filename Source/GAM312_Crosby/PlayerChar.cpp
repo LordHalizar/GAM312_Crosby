@@ -38,6 +38,9 @@ void APlayerChar::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	// Updates player stat bars in real time per tick
+	playerUI->UpdateBars(Health, Hunger, Stamina);
+
 	if (isBuilding) 
 	// Line trace for determining the spawn point of selected building parts to be spawned.
 	// Spawned building parts should follow players cursor until final placement point is selected.
