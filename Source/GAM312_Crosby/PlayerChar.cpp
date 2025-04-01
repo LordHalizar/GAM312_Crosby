@@ -31,6 +31,12 @@ void APlayerChar::BeginPlay()
 	FTimerHandle StatsTimerHandle;
 	GetWorld()->GetTimerManager().SetTimer(StatsTimerHandle, this, &APlayerChar::DecreaseStats, 2.0f, true);
 	
+	if (objWidget) 
+	// If the object widget is valid, when first starts, initial values for objective materials and objects are set to zero
+	{
+		objWidget->UpdatebuildObj(0.0f);
+		objWidget->UpdatematOBJ(0.0f);
+	}
 }
 
 // Called every frame
@@ -129,6 +135,11 @@ void APlayerChar::FindObject()
 					{
 						GiveResource(resourceValue, hitName);
 
+						// Keeps track of how many materials the player has collected towards objectives
+						matsCollected = matsCollected + resourceValue;
+
+						objWidget->UpdatematOBJ(matsCollected);
+
 						// Checks if line trace is hitting anything and if, by extension, a resources is being collected
 						check(GEngine != nullptr);
 						GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Resource Collected"));
@@ -153,6 +164,10 @@ void APlayerChar::FindObject()
 	else 
 	{
 		isBuilding = false;
+		// Updates objective info for when player builds a required objective object
+		objectsBuilt = objectsBuilt + 1.0f;
+
+		objWidget->UpdatebuildObj(objectsBuilt);
 	}
 }
 
