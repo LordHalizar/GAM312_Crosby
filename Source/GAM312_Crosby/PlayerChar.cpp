@@ -75,6 +75,7 @@ void APlayerChar::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 
 	PlayerInputComponent->BindAction("Interact", IE_Pressed, this, &APlayerChar::FindObject);
 	PlayerInputComponent->BindAction("RotPart", IE_Pressed, this, &APlayerChar::RotateBuilding);
+	PlayerInputComponent->BindAction("PauseMenu", IE_Pressed, this, &APlayerChar::PauseGame);
 }
 
 void APlayerChar::MoveForward(float axisValue)
@@ -171,6 +172,8 @@ void APlayerChar::FindObject()
 		objWidget->UpdatebuildObj(objectsBuilt);
 	}
 }
+
+//void APlayerChar::PauseGame() {}
 
 void APlayerChar::SetHealth(float amount)
 // Makes sure that health does not exceed 100 and allows for changing of health with positive or negative values
