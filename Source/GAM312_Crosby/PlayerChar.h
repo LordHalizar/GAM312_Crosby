@@ -51,6 +51,9 @@ public:
 	UFUNCTION()
 		void FindObject();
 
+		UFUNCTION(BlueprintImplementableEvent)
+		void PauseGame();
+
 	UPROPERTY(VisibleAnywhere)
 		// Variable for camera component
 		UCameraComponent* PlayerCamComp;
