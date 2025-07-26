@@ -47,6 +47,8 @@ void APlayerChar::Tick(float DeltaTime)
 	// Updates player stat bars in real time per tick
 	playerUI->UpdateBars(Health, Hunger, Stamina, Thirst);
 
+	SprintStaminaDrain();
+
 	if (isBuilding) 
 	// Line trace for determining the spawn point of selected building parts to be spawned.
 	// Spawned building parts should follow players cursor until final placement point is selected.
@@ -72,6 +74,9 @@ void APlayerChar::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	PlayerInputComponent->BindAxis("Turn", this, &APlayerChar::AddControllerYawInput);
 	PlayerInputComponent->BindAction("JumpEvent", IE_Pressed, this, &APlayerChar::StartJump);
 	PlayerInputComponent->BindAction("JumpEvent", IE_Released, this, &APlayerChar::StopJump);
+
+	PlayerInputComponent->BindAction("Sprint", IE_Pressed, this, &APlayerChar::StartSprint);
+	PlayerInputComponent->BindAction("Sprint", IE_Released, this, &APlayerChar::StopSprint);
 
 	PlayerInputComponent->BindAction("Interact", IE_Pressed, this, &APlayerChar::FindObject);
 	PlayerInputComponent->BindAction("RotPart", IE_Pressed, this, &APlayerChar::RotateBuilding);
@@ -200,6 +205,29 @@ void APlayerChar::SetStamina(float amount)
 	{
 		Stamina = Stamina + amount;
 	}
+
+	else if (Stamina + amount >= 100)
+	{
+		Stamina = 100;
+	}
+
+	else if (Stamina + amount <= 0)
+	{
+		Stamina = 0;
+	}
+}
+
+void APlayerChar::SprintStaminaDrain()
+{
+	if (Sprinting == true)
+	{
+		SetStamina(-0.3f);
+	}
+
+	if (Stamina <= 0)
+	{
+		StopSprint();
+	}
 }
 
 void APlayerChar::SetThirst(float amount)
@@ -226,7 +254,10 @@ void APlayerChar::DecreaseStats()
 	}
 
 	// Stamina recovers constantly as long as hunger and thirst is above 0
-	SetStamina(10.0f);
+	if (Sprinting != true)
+	{
+		SetStamina(10.0f);
+	}
 
 	// If hunger reaches 0, health value slowly decreases until it reaches 0
 	if (Hunger <= 0) 
