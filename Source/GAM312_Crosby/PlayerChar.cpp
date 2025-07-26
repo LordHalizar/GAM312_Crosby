@@ -45,7 +45,7 @@ void APlayerChar::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	// Updates player stat bars in real time per tick
-	playerUI->UpdateBars(Health, Hunger, Stamina);
+	playerUI->UpdateBars(Health, Hunger, Stamina, Thirst);
 
 	if (isBuilding) 
 	// Line trace for determining the spawn point of selected building parts to be spawned.
@@ -202,6 +202,15 @@ void APlayerChar::SetStamina(float amount)
 	}
 }
 
+void APlayerChar::SetThirst(float amount)
+// Makes sure that thirst does not exceed 100 and allows for changing of thirst with positive or negative values
+{
+	if (Thirst + amount < 100)
+	{
+		Thirst = Thirst + amount;
+	}
+}
+
 void APlayerChar::DecreaseStats()
 {
 	// Hunger value slowly decreases over time, meaning player becomes increasingly more hungry
@@ -210,7 +219,13 @@ void APlayerChar::DecreaseStats()
 		SetHunger(-1.0f);
 	}
 
-	// Stamina recovers constantly as long as hunger is above 0
+	// Thirst value slowly decreases over time, meaning player becomes increasingly more thirsty
+	if (Thirst > 0)
+	{
+		SetThirst(-1.0f);
+	}
+
+	// Stamina recovers constantly as long as hunger and thirst is above 0
 	SetStamina(10.0f);
 
 	// If hunger reaches 0, health value slowly decreases until it reaches 0

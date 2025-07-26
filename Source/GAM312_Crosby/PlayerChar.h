@@ -70,6 +70,10 @@ public:
 		// Variable setup for player default stamina
 		float Stamina = 100.0f;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats")
+		// Variable setup for player default hunger
+		float Thirst = 100.0f;
+
 	UPROPERTY(EditAnywhere, Category = "Resources")
 		// Integer variable setup for wood resource
 		int Wood;
@@ -132,6 +136,10 @@ public:
 	UFUNCTION(BlueprintCallable)
 		// Setup for Stamina function
 		void SetStamina(float amount);
+
+	UFUNCTION(BlueprintCallable)
+		// Setup for Hunger function
+		void SetThirst(float amount);
 
 	UFUNCTION()
 		// Setup for DecreaseStats function
