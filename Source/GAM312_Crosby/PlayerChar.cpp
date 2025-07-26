@@ -232,6 +232,12 @@ void APlayerChar::DecreaseStats()
 	if (Hunger <= 0) 
 	{
 		SetHealth(-3.0f);
+		HealthBeingDamaged = true;
+	}
+
+	else if (Hunger > 0) 
+	{
+		HealthBeingDamaged = false;
 	}
 }
 
