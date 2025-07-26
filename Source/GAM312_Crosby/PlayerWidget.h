@@ -17,5 +17,5 @@ class GAM312_CROSBY_API UPlayerWidget : public UUserWidget
 public:
 	UFUNCTION(BlueprintImplementableEvent)
 		// Initial creation of UpdateBars function. Implementation of this functions occurs in Blueprints
-		void UpdateBars(float Health1, float Hunger1, float Stamina1);
+		void UpdateBars(float Health1, float Hunger1, float Stamina1, float Thirstl);
 };
