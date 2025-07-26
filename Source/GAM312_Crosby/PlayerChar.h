@@ -63,6 +63,10 @@ public:
 		float Health = 100.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats")
+		// Variable setup for player health default value
+		bool HealthBeingDamaged = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats")
 		// Variable setup for player default hunger
 		float Hunger = 100.0f;
 
