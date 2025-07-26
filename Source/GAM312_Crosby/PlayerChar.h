@@ -40,6 +40,18 @@ public:
 		// Movement function for left and right movement based on positive (d) or negative (a) integer input
 		void MoveRight(float axisValue);
 
+	UFUNCTION(BlueprintImplementableEvent)
+		// Movement function for the initiation of sprinting event movement
+		void StartSprint();
+
+	UFUNCTION(BlueprintImplementableEvent)
+		// Movement function for the initiation of sprinting event movement
+		void StopSprint();
+
+	UFUNCTION()
+		// Movement function for the initiation of sprinting event movement
+		void SprintStaminaDrain();
+
 	UFUNCTION()
 		// Movement function for the initiation of jumping event movement
 		void StartJump();
@@ -73,6 +85,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats")
 		// Variable setup for player default stamina
 		float Stamina = 100.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats")
+		// Variable setup for player default sprinting boolean
+		bool Sprinting = false;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats")
 		// Variable setup for player default hunger
