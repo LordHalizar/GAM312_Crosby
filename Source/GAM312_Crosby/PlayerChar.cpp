@@ -196,6 +196,11 @@ void APlayerChar::SetHunger(float amount)
 	{
 		Hunger = Hunger + amount;
 	}
+
+	else if (Hunger + amount >= 100)
+	{
+		Hunger = 100;
+	}
 }
 
 void APlayerChar::SetStamina(float amount)
@@ -236,6 +241,11 @@ void APlayerChar::SetThirst(float amount)
 	if (Thirst + amount < 100)
 	{
 		Thirst = Thirst + amount;
+	}
+
+	else if (Thirst + amount >= 100)
+	{
+		Thirst = 100;
 	}
 }
 
